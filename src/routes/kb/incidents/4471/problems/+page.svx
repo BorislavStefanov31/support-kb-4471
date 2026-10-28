@@ -1,6 +1,6 @@
 ---
 layout: runbook
-title: '#4471 · two problems, not one'
+title: '#4471 · three problems, not one'
 owner: support desk
 status: open
 reviewed: 2026-10-28
@@ -16,24 +16,29 @@ signature: v1.eyJzdG9yeSI6Im9mZiIsInN1YiI6IjUwOCIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LW
 [#4471](/kb/incidents/4471) says *one issue, one fix queued*. Its own table says otherwise. The
 reports were merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject)), and
 every subject in #4471 is some way of saying "wrong date". That is the symptom, not the cause.
-#4471 holds two problems. Each now has its own ticket:
+#4471 holds three problems. Each now has its own ticket:
 
 1. [`parser`: the shared parser reads day-first dates month first](https://github.com/BorislavStefanov31/support-kb-4471/issues/1)
 2. [`hint`: the booking-v3 form hints `MM/DD/YYYY` to day-first tenants](https://github.com/BorislavStefanov31/support-kb-4471/issues/2)
+3. [`one-day`: dates move by one day](https://github.com/BorislavStefanov31/support-kb-4471/issues/4)
 
 <Callout kind="warn">
-The queued fix for the month-first parser closes only the first ticket. The hint keeps sending
-flipped dates after it ships.
+The queued fix for the month-first parser closes only the first ticket. The other two keep coming
+after it ships.
 </Callout>
 
 ## What #4471 holds
 
 <CauseTable ticket={4471} />
 
-Read the table by row: **`parser`** is ticket 1 and **`hint`** is ticket 2. The table marks
-`hint` *no ticket of its own*; it has one now.
+Read the table by row:
 
-## The two problems
+- **`parser`** is the parser ticket, without the one-day reports in the note under the table.
+- **`hint`** is the hint ticket. The table marks it *no ticket of its own*; it has one now.
+- **The one-day note** is the one-day ticket. The table files those reports under `parser` by
+  tenant, but no parse moves a date by one day.
+
+## The three problems
 
 **`parser`: the shared parser reads every date month first.** Every tenant on file writes the day
 first. A date like 7/4 is read as 4 July, so bookings, invites and reminders land on a day with
@@ -47,13 +52,15 @@ form bookings at booking-v3 tenants have it. Fixing the parser does not fix the 
 were guessed from the reporter's browser and disagree with the cause in both directions, as the
 *tagged as* column shows; do not triage on them.
 
-The note under the table counts the reports the desk read as a one-day move. They stay in
-`parser`, where they were filed. If they keep coming after the parser fix, they are worth a look
-of their own.
+**`one-day`: dates move by one day.** "Client in Lisbon got Tuesday. Client in Toronto got Monday."
+A day/month swap cannot move a date by one day, or send an invite before the booking was made.
+These read like a timezone conversion, not a parse. The desk already listed them in
+`desk-notes.json`.
 
 ## For the desk
 
 - Triage date reports on tenant and booking path, not subject. `causes.ts` already knows how.
-- Decision 0001 merged these two into one ticket. It needs a new decision record to replace it.
+- Keep a report in the one-day list when it moves a date by a day, not a month.
+- Decision 0001 merged these three into one ticket. It needs a new decision record to replace it.
 
 <RenderStamp {signature} />
