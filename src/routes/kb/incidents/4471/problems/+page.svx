@@ -4,7 +4,7 @@ title: '#4471 · three problems, not one'
 owner: support desk
 status: open
 reviewed: 2026-10-28
-signature: Borislav Stefanov
+signature: v1.eyJzdG9yeSI6Im9mZiIsInN1YiI6IjUwOCIsImF1ZCI6ImNoYWxsZW5nZTp3aGF0LWl0LXNob3dzIiwiaWF0IjoxNzkzMjIxNTE2LCJleHAiOjE3OTMzMDc5MTZ9.LQIRAoGssizfdTVhF1G2Iyph0NYkmqE5MTjR2_tr96c
 ---
 
 <script>
@@ -33,8 +33,8 @@ after it ships.
 
 Read the table by row:
 
-- **`parser`** is ticket 1, counted as the table counts it. The one-day reports in the note under
-  the table stay in that count, where they were filed.
+- **`parser`** is ticket 1, without the one-day reports in the note under the table. Those are
+  ticket 3.
 - **`hint`** is ticket 2. The table marks it *no ticket of its own*; it has one now.
 - **The one-day note** is ticket 3. The table files those reports under `parser` by tenant, but no
   parse moves a date by one day.
