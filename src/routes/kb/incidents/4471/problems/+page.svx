@@ -8,29 +8,36 @@ signature: Borislav Stefanov
 ---
 
 <script>
-  import ProblemTable from '#lib/kb/ProblemTable.svelte';
   import CauseTable from '#lib/kb/CauseTable.svelte';
   import Callout from '#lib/kb/Callout.svelte';
   import RenderStamp from '#lib/kb/RenderStamp.svelte';
-
-  const repo = 'https://github.com/BorislavStefanov31/support-kb-4471/issues';
-  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
 </script>
 
 [#4471](/kb/incidents/4471) says *one issue, one fix queued*. Its own table says otherwise. The
 reports were merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject)), and
 every subject in #4471 is some way of saying "wrong date". That is the symptom, not the cause.
-Read by tenant, by how the booking came in, and by what the body says, #4471 holds three problems.
-Each now has its own ticket.
+#4471 holds three problems. Each now has its own ticket:
+
+1. [`parser`: the shared parser reads day-first dates month first](https://github.com/BorislavStefanov31/support-kb-4471/issues/1)
+2. [`hint`: the booking-v3 form hints `MM/DD/YYYY` to day-first tenants](https://github.com/BorislavStefanov31/support-kb-4471/issues/2)
+3. [`one-day`: dates move by one day](https://github.com/BorislavStefanov31/support-kb-4471/issues/3)
 
 <Callout kind="warn">
-The queued fix for the month-first parser closes only the first row. The other two keep coming
+The queued fix for the month-first parser closes only the first ticket. The other two keep coming
 after it ships.
 </Callout>
 
 ## What #4471 holds
 
-<ProblemTable ticket={4471} {tickets} />
+<CauseTable ticket={4471} />
+
+Read the table by row:
+
+- **`parser`** is ticket 1, without the one-day reports in the note under the table. Those are
+  ticket 3.
+- **`hint`** is ticket 2. The table marks it *no ticket of its own*; it has one now.
+- **The one-day note** is ticket 3. The table files those reports under `parser` by tenant, but no
+  parse moves a date by one day.
 
 ## The three problems
 
@@ -43,21 +50,13 @@ months look fine. Reports come from every tenant and every channel.
 who write the day first get bookings through that form typed month first, as the hint asks, and
 read the tenant's way. The symptom is the same swap, so subject lines cannot tell it apart; only
 form bookings at booking-v3 tenants have it. Fixing the parser does not fix the hint. Intake tags
-were guessed from the reporter's browser and disagree with the cause in both directions; do not
-triage on them.
+were guessed from the reporter's browser and disagree with the cause in both directions, as the
+*tagged as* column shows; do not triage on them.
 
 **`one-day`: dates move by one day.** "Client in Lisbon got Tuesday. Client in Toronto got Monday."
 A day/month swap cannot move a date by one day, or send an invite before the booking was made.
-These read like a timezone conversion, not a parse. The desk already noted them in
-`desk-notes.json`. They stay counted under `parser`, where they were filed, so the rows above add
-up to more than the reports merged.
-
-## How #4471 has been shown until now
-
-The table on the #4471 page groups by cause, gives the hint reports no ticket, and leaves the one-day
-reports as a footnote:
-
-<CauseTable ticket={4471} />
+These read like a timezone conversion, not a parse. The desk already listed them in
+`desk-notes.json`.
 
 ## For the desk
 
