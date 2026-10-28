@@ -49,11 +49,13 @@ triage on them.
 **`one-day`: dates move by one day.** "Client in Lisbon got Tuesday. Client in Toronto got Monday."
 A day/month swap cannot move a date by one day, or send an invite before the booking was made.
 These read like a timezone conversion, not a parse. The desk already noted them in
-`desk-notes.json` and then filed them under `parser` by tenant.
+`desk-notes.json`. They stay counted under `parser`, where they were filed, so the rows above add
+up to more than the reports merged.
 
 ## How #4471 has been shown until now
 
-The table on the #4471 page groups by cause and leaves the one-day reports inside `parser`:
+The table on the #4471 page groups by cause, gives the hint reports no ticket, and leaves the one-day
+reports as a footnote:
 
 <CauseTable ticket={4471} />
 

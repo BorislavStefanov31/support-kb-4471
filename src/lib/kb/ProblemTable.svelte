@@ -39,7 +39,7 @@
     {#each view.groups as g (g.problem)}
       <tr>
         <td><code>{g.problem}</code><br /><span class="muted">{NAMES[g.problem]}</span></td>
-        <td><strong>{g.reports.length}</strong></td>
+        <td><strong>{g.reports.length}</strong>{#if g.oneDay}<br /><span class="muted">{g.oneDay} also one-day</span>{/if}</td>
         <td>{g.tenants.length}</td>
         <td class="muted">{list(g.channels)}</td>
         <td class="muted">{list(g.taggedAs)}</td>
