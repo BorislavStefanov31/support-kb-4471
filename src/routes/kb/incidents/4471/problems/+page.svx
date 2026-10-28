@@ -1,0 +1,66 @@
+---
+layout: runbook
+title: '#4471 · three problems, not one'
+owner: support desk
+status: open
+reviewed: 2026-10-28
+signature: Borislav Stefanov
+---
+
+<script>
+  import ProblemTable from '#lib/kb/ProblemTable.svelte';
+  import CauseTable from '#lib/kb/CauseTable.svelte';
+  import Callout from '#lib/kb/Callout.svelte';
+  import RenderStamp from '#lib/kb/RenderStamp.svelte';
+
+  const repo = 'https://github.com/BorislavStefanov31/support-kb-4471/issues';
+  const tickets = { parser: `${repo}/1`, hint: `${repo}/2`, 'one-day': `${repo}/3` };
+</script>
+
+[#4471](/kb/incidents/4471) says *one issue, one fix queued*. Its own table says otherwise. The
+reports were merged by subject line ([decision 0001](/kb/decisions/0001-dedupe-by-subject)), and
+every subject in #4471 is some way of saying "wrong date". That is the symptom, not the cause.
+Read by tenant, by how the booking came in, and by what the body says, #4471 holds three problems.
+Each now has its own ticket.
+
+<Callout kind="warn">
+The queued fix for the month-first parser closes only the first row. The other two keep coming
+after it ships.
+</Callout>
+
+## What #4471 holds
+
+<ProblemTable ticket={4471} {tickets} />
+
+## The three problems
+
+**`parser`: the shared parser reads every date month first.** Every tenant on file writes the day
+first. A date like 7/4 is read as 4 July, so bookings, invites and reminders land on a day with
+day and month swapped. Only dates with both parts at 12 or below can flip, which is why some
+months look fine. Reports come from every tenant and every channel.
+
+**`hint`: the booking-v3 form prints `MM/DD/YYYY` under its date field.** Tenants on booking-v3
+who write the day first get bookings through that form typed month first, as the hint asks, and
+read the tenant's way. The symptom is the same swap, so subject lines cannot tell it apart; only
+form bookings at booking-v3 tenants have it. Fixing the parser does not fix the hint. Intake tags
+were guessed from the reporter's browser and disagree with the cause in both directions; do not
+triage on them.
+
+**`one-day`: dates move by one day.** "Client in Lisbon got Tuesday. Client in Toronto got Monday."
+A day/month swap cannot move a date by one day, or send an invite before the booking was made.
+These read like a timezone conversion, not a parse. The desk already noted them in
+`desk-notes.json` and then filed them under `parser` by tenant.
+
+## How #4471 has been shown until now
+
+The table on the #4471 page groups by cause and leaves the one-day reports inside `parser`:
+
+<CauseTable ticket={4471} />
+
+## For the desk
+
+- Triage date reports on tenant and booking path, not subject. `causes.ts` already knows how.
+- Keep a report in the one-day list when it moves a date by a day, not a month.
+- Decision 0001 merged these three into one ticket. It needs a new decision record to replace it.
+
+<RenderStamp {signature} />
